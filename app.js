@@ -16,7 +16,25 @@
  * POST /api/account/login      - Ska kunna logga in
  */
 
+/**
+ * Individuella inlämning 
+ * 
+ * Krav funktionalitet
+ * Lägg till produkt i meny skicka med egenskaper som finns i produkt (id , title, desc, pric )
+ * Kunna ta bort en produkt (enbart en som finns)
+ * Felmeddelande om inte krav ovan uppfylls
+ * För def API-nycklar att hämta från
+ * Meny sparad i databas
+ */
 
+/**
+ * För Godkänt 
+ * Uppnå allt ovan
+ * Använda ett middleware för api kontroll
+ * 
+ * VG - Endpoint och middleware i två JS filer som importeras i app.js
+ * 
+ */
 
 
  const express = require('express');
@@ -24,11 +42,43 @@
  const PORT = 8000;
 
  app.use(express.json());
+
+// Sätter upp API 
+
+ const apiKeys = [
+    '7BTxHCyHhzIME5TI',
+    'ngfeNG1iaq9Q2PJK',
+    'zaCmZA74PLKCrD8Y',
+    'KwOi5vm2TYNmi8Dd',
+    'edVCa1E6zDZRztaq'
+];
+
+
+function auth(req, res, next) {
+    console.log('--- Middleware---');
+    console.log(`Middleware: ${req.url}`);
+    console.log(`API key: ${JSON.stringify(req.headers['api-key'])}`);
+
+    const apiKey = req.headers['api-key'];
+
+    if(apiKey && apiKeys.includes(apiKey) ) {
+        next();
+    } else {
+        const resObj = {
+            error: 'Access denied , use a proper API-key'
+        }
+
+        res.json(resObj);
+    }
+}
  
+
  const orderRouter = require('./routes/order');
  const accountsRouter = require('./routes/accounts');
  const menuRouter = require('./routes/menu');
- 
+ const adminRouter = require('./routes/admin');
+
+ app.use('/api/admin', auth, adminRouter);
  app.use('/api/menu', menuRouter);
  app.use('/api/account', accountsRouter);
  app.use('/api/order', orderRouter);
