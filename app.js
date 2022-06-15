@@ -43,46 +43,19 @@
 
  app.use(express.json());
 
-// Sätter upp API 
 
- const apiKeys = [
-    '7BTxHCyHhzIME5TI',
-    'ngfeNG1iaq9Q2PJK',
-    'zaCmZA74PLKCrD8Y',
-    'KwOi5vm2TYNmi8Dd',
-    'edVCa1E6zDZRztaq'
-];
-
-
-function auth(req, res, next) {
-    console.log('--- Middleware---');
-    console.log(`Middleware: ${req.url}`);
-    console.log(`API key: ${JSON.stringify(req.headers['api-key'])}`);
-
-    const apiKey = req.headers['api-key'];
-
-    if(apiKey && apiKeys.includes(apiKey) ) {
-        next();
-    } else {
-        const resObj = {
-            error: 'Access denied , use a proper API-key'
-        }
-
-        res.json(resObj);
-    }
-}
- 
 
  const orderRouter = require('./routes/order');
  const accountsRouter = require('./routes/accounts');
  const menuRouter = require('./routes/menu');
  const adminRouter = require('./routes/admin');
+ 
 
- app.use('/api/admin', auth, adminRouter);
+
  app.use('/api/menu', menuRouter);
  app.use('/api/account', accountsRouter);
  app.use('/api/order', orderRouter);
- 
+ app.use('/api/admin', adminRouter);
  
  
  app.listen(PORT, () => {
